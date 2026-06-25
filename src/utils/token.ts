@@ -1,6 +1,6 @@
-const TOKEN_KEY = "***";
-const EMAIL_KEY = "***";
-const NAME_KEY = "***";
+const TOKEN_KEY = "token";
+const EMAIL_KEY = "email";
+const NAME_KEY = "name";
 
 export const tokenStorage = {
   get: (): string | null => localStorage.getItem(TOKEN_KEY),

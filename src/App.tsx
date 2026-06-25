@@ -5,7 +5,8 @@ import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { LeadsPage } from "./pages/LeadsPage";
 import { LeadFormPage } from "./pages/LeadFormPage";
-import { NotFoundPage } from "./pages/NotFoundPage";
+import { NotFoundPage } from "./pages/NotFoundPage"; 
+import { LeadDetailPage } from "./pages/LeadDetailPage"; 
 
 export default function App() {
   return (
@@ -37,6 +38,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <LeadFormPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/leads/:id"
+          element={
+            <ProtectedRoute>
+              <LeadDetailPage />
             </ProtectedRoute>
           }
         />

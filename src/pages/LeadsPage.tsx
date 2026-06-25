@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { leadsService } from "../services/leadsService";
-import type { Lead, PagedResult } from "../types/lead";
+import type { AiSuggestion, Lead, PagedResult } from "../types/lead";
 import { extractErrorMessage } from "../utils/errors";
+import { StatusBadge } from "../components/StatusBadge";
+
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50];
 
@@ -15,7 +17,14 @@ export function LeadsPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [, setSelectedLeadId] = useState<number | null>(null);
+  const [showAiPanel, setShowAiPanel] = useState(false);
+  const [aiSuggestion, setAiSuggestion] = useState<AiSuggestion | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
+  const [sortColumn, setSortColumn] = useState("id");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+ 
   // Load leads whenever page/pageSize changes. Search is client-side
   // (filters the current page) because the API doesn't support it yet.
   useEffect(() => {
@@ -23,8 +32,13 @@ export function LeadsPage() {
     setLoading(true);
     setError(null);
 
-    leadsService
-      .list(page, pageSize)
+    leadsService.list(
+        page,
+        pageSize,
+        sortColumn,
+        sortDirection,
+        search
+      )
       .then((res) => {
         if (!cancelled) setData(res);
       })
@@ -38,7 +52,7 @@ export function LeadsPage() {
     return () => {
       cancelled = true;
     };
-  }, [page, pageSize]);
+  }, [page, pageSize, sortColumn, sortDirection, search]);
 
  const filteredItems = useMemo(() => {
   if (!data) return [];
@@ -61,11 +75,43 @@ export function LeadsPage() {
   const canPrev = page > 1;
   const canNext = page < totalPages;
 
+    async function handleAskAi(leadId: number) {
+    try {
+      setSelectedLeadId(leadId);
+      setShowAiPanel(true);
+      setAiLoading(true);
+      setAiSuggestion(null);
+
+      const suggestion =
+        await leadsService.getAiSuggestion(leadId);
+
+      setAiSuggestion(suggestion);
+
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setAiLoading(false);
+    }
+  }
+
+  function handleSort(column: string) {
+    if (sortColumn === column) {
+      setSortDirection((prev) =>
+        prev === "asc" ? "desc" : "asc"
+      );
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+
+    setPage(1);
+  }
+
   return (
     <div className="leads-page">
       <div className="page-header">
         <div>
-          <h1>Future Clients</h1>
+          <h1>Dashboard</h1>
           <p className="muted">
             {data ? '' : "Loading..."}
           </p>
@@ -78,12 +124,83 @@ export function LeadsPage() {
           + New Lead
         </button>
       </div>
+      {showAiPanel && (
+  <div className="ai-panel">
+
+    <div className="ai-panel__header">
+      <h2>AI Suggestion</h2>
+
+      <button
+        type="button"
+        className="ai-panel__close"
+        onClick={() => setShowAiPanel(false)}
+      >
+        ✕
+      </button>
+    </div>
+
+    {aiLoading && (
+      <div className="ai-loading">
+        🤖 Analyzing lead activity...
+      </div>
+    )}
+
+    {!aiLoading && aiSuggestion && (
+      <div className="ai-suggestion">
+
+        <div className="ai-card">
+          <span className="ai-label">
+            Recommended Action
+          </span>
+
+          <p className="ai-value">
+            {aiSuggestion.recommendedAction}
+          </p>
+        </div>
+
+        <div className="ai-card">
+          <span className="ai-label">
+            Reason
+          </span>
+
+          <p className="ai-value">
+            {aiSuggestion.reason}
+          </p>
+        </div>
+
+         <div className="ai-card">
+          <span className="ai-label">
+            Sales Pitch
+          </span>
+
+          <p className="ai-value">
+            {aiSuggestion.pitch}
+          </p>
+        </div>
+
+        <div className="ai-card">
+          <span className="ai-label">
+            Confidence
+          </span>
+
+          <div
+            className={`ai-confidence ai-confidence--${aiSuggestion.confidence.toLowerCase()}`}
+          >
+            {aiSuggestion.confidence}
+          </div>
+        </div>
+
+      </div>
+    )}
+
+  </div>
+)}
 
       <div className="toolbar">
         <input
           type="search"
           className="toolbar__search"
-          placeholder="Search carrier, DOT, phone, email..."
+          placeholder="Search Business Name, DOT, phone, email..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -111,14 +228,30 @@ export function LeadsPage() {
         <table className="table">
           <thead>
             <tr>
-              <th>Carrier</th>
-              <th>DOT</th>
-              <th>State</th>
-              <th>Units</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th>Status</th>
-              <th>Assigned</th>
+              <th  className="sortable" onClick={() => handleSort("name")}>
+                Business Name {sortColumn === "name" && (sortDirection === "asc" ? " ↑" : " ↓")}
+              </th>
+              <th  className="sortable" onClick={() => handleSort("dOT")}>
+                DOT {sortColumn === "dot" && (sortDirection === "asc" ? " ↑" : " ↓")}</th>
+              <th  className="sortable" onClick={() => handleSort("street")}>
+                Street {sortColumn === "street" && (sortDirection === "asc" ? " ↑" : " ↓")}</th>
+              <th  className="sortable" onClick={() => handleSort("city")}>
+                City {sortColumn === "city" && (sortDirection === "asc" ? " ↑" : " ↓")}</th>
+              <th  className="sortable" onClick={() => handleSort("state")}>
+                State {sortColumn === "state" && (sortDirection === "asc" ? " ↑" : " ↓")}</th>
+              <th  className="sortable" onClick={() => handleSort("zip")}>
+                Zip {sortColumn === "zip" && (sortDirection === "asc" ? " ↑" : " ↓")}</th>
+              <th  className="sortable" onClick={() => handleSort("powerUnits")}>
+                Units {sortColumn === "powerUnits" && (sortDirection === "asc" ? " ↑" : " ↓")}</th>
+              <th  className="sortable" onClick={() => handleSort("operationStartDate")}>
+                Operation Start Date {sortColumn === "operationStartDate" && (sortDirection === "asc" ? " ↑" : " ↓")}</th>
+              <th  className="sortable" onClick={() => handleSort("phone")}>
+                Phone {sortColumn === "phone" && (sortDirection === "asc" ? " ↑" : " ↓")}</th>
+              <th  className="sortable" onClick={() => handleSort("email")}>
+                Email {sortColumn === "email" && (sortDirection === "asc" ? " ↑" : " ↓")}</th>
+              <th  className="sortable" onClick={() => handleSort("status")}>
+                Status {sortColumn === "status" && (sortDirection === "asc" ? " ↑" : " ↓")}</th>
+              <th>AI</th>
               <th aria-label="actions" />
             </tr>
           </thead>
@@ -140,7 +273,7 @@ export function LeadsPage() {
               </tr>
             )}
             {!loading &&
-              filteredItems.map((lead) => (
+              data?.items.map((lead) => (
                 <tr key={lead.id}>
                   <td>
                     <Link to={`/leads/${lead.id}`}>
@@ -151,13 +284,28 @@ export function LeadsPage() {
                   <td>
                     {lead.dotNumber || "—"}
                   </td>
+                  <td>
+                    {lead.street || "—"}
+                  </td>
+                  <td>
+                    {lead.city || "—"}
+                  </td>               
 
                   <td>
                     {lead.state || "—"}
                   </td>
+                  <td>
+                    {lead.zip || "—"}
+                  </td>
 
                   <td>
                     {lead.powerUnits || "—"}
+                  </td>
+                  
+                  <td>
+                    {lead.operationStartDate
+                      ? new Date(lead.operationStartDate).toLocaleDateString("en-US")
+                      : "—"}
                   </td>
 
                   <td>
@@ -168,12 +316,17 @@ export function LeadsPage() {
                   </td>
 
                   <td>
-                    {lead.status || "New"}
-                  </td>
+                      <StatusBadge status={lead.status} />
+                  </td> 
 
-                  <td>
-                    {lead.assignedUser || "Unassigned"}
-                  </td>
+                  <td className="ai-column">
+                    <button
+                      className="btn--ai"
+                      onClick={() => handleAskAi(lead.id)}
+                    >
+                      ✨ Ask AI
+                    </button>
+                </td>
                 </tr>
               ))}
           </tbody>
@@ -200,7 +353,9 @@ export function LeadsPage() {
         >
           Next →
         </button>
-      </div>
+      </div>   
+
     </div>
   );
 }
+

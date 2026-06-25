@@ -11,6 +11,12 @@ const empty: LeadInput = {
   phone: "",
   source: "",
   notes: "",
+  street: "",
+  city: "",
+  state: "",
+  zip: "",
+  website: ""
+
 };
 
 export function LeadFormPage() {
@@ -30,15 +36,19 @@ export function LeadFormPage() {
     setLoading(true);
 
     leadsService
-      .get(id)
+      .get(Number(id))
       .then((lead) => {
         if (cancelled) return;
         setForm({
           name: lead.name,
-          email: lead.email,
+          email: lead.email ?? "",
           phone: lead.phone ?? "",
           source: lead.source ?? "",
           notes: lead.notes ?? "",
+          street: lead.street ?? "",
+          city: lead.city ?? "",
+          state: lead.state ?? "",
+          website: lead.website ??"",
         });
       })
       .catch((err) => {
@@ -60,19 +70,27 @@ export function LeadFormPage() {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
-    setSubmitting(true);
+    console.log("Before set submit");
+
 
     // Strip empties so the API sees real nulls/omissions, not blank strings.
     const payload: LeadInput = {
       name: form.name.trim(),
       email: form.email.trim(),
+      website: form.website.trim(),
       phone: form.phone?.trim() || undefined,
       source: form.source?.trim() || undefined,
       notes: form.notes?.trim() || undefined,
+      street: form.street?.trim(),
+      city: form.city?.trim() || undefined,
+      state: form.state?.trim() || undefined,
+      zip: form.zip?.trim() || undefined,
     };
 
     try {
       if (isEdit && id) {
+        console.log("sending update", payload);
+        
         await leadsService.update(id, payload);
       } else {
         await leadsService.create(payload);
@@ -107,6 +125,60 @@ export function LeadFormPage() {
           />
         </label>
 
+         <label className="form__field">
+          <span>Street *</span>
+          <input
+            type="text"
+            value={form.street}
+            onChange={(e) => update("street", e.target.value)}
+            maxLength={200}
+            required
+          />
+        </label>
+
+         <label className="form__field">
+          <span>City *</span>
+          <input
+            type="text"
+            value={form.city}
+            onChange={(e) => update("city", e.target.value)}
+            maxLength={200}
+            required
+          />
+        </label>
+
+          <label className="form__field">
+          <span>State *</span>
+          <input
+            type="text"
+            value={form.state}
+            onChange={(e) => update("state", e.target.value)}
+            maxLength={200}
+            required
+          />
+        </label>
+
+         <label className="form__field">
+          <span>Zip Code *</span>
+          <input
+            type="text"
+            value={form.zip}
+            onChange={(e) => update("zip", e.target.value)}
+            maxLength={200}
+            required
+          />
+        </label>
+
+         <label className="form__field">
+          <span>Phone</span>
+          <input
+            type="tel"
+            value={form.phone ?? ""}
+            onChange={(e) => update("phone", e.target.value)}
+            maxLength={50}
+          />
+        </label>
+
         <label className="form__field">
           <span>Email *</span>
           <input
@@ -118,15 +190,16 @@ export function LeadFormPage() {
           />
         </label>
 
-        <label className="form__field">
-          <span>Phone</span>
+         <label className="form__field">
+          <span>Website</span>
           <input
             type="tel"
-            value={form.phone ?? ""}
-            onChange={(e) => update("phone", e.target.value)}
+            value={form.website ?? ""}
+            onChange={(e) => update("website", e.target.value)}
             maxLength={50}
           />
         </label>
+       
 
         <label className="form__field">
           <span>Source</span>

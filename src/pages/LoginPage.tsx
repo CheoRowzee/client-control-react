@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { extractErrorMessage } from "../utils/errors";
 
+
 interface LocationState {
   from?: { pathname?: string };
 }
@@ -27,9 +28,11 @@ export function LoginPage() {
     setError(null);
     setSubmitting(true);
     try {
-      console.log("before login");
-      await login({ email, password });
-      console.log("after login");
+ 
+      var res = await login({ email, password });
+
+      console.log("LOGIN RESPONSE:", res);
+
 
       navigate(redirectTo, { replace: true });
     } catch (err) {
