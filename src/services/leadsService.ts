@@ -5,7 +5,7 @@ import type { Lead, LeadDetail, LeadInput, PagedResult } from "../types/lead";
 
 export const leadsService = {
   async list( page: number,pageSize: number,sortColumn: string,sortDirection: string,search: string): Promise<PagedResult<Lead>> {
-    const { data } = await apiClient.get<PagedResult<Lead>>("/api/leads", {
+    const { data } = await apiClient.get<PagedResult<Lead>>("/leads", {
         params: {
         page,
         pageSize,
