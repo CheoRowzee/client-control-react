@@ -17,7 +17,7 @@ export function Layout() {
          <Link to="/" className="app-brand">
           <span className="brand-c">C</span>
           <span className="brand-io">IO</span>
-          <span className="brand-intelligence"> Intelligence</span>
+          <span className="brand-intelligence">Intelligence</span>
         </Link>
 
           <nav className="app-nav">

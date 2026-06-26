@@ -641,12 +641,11 @@ h1 {
 }
 
 .btn--ai {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+  
+  gap: 0;
   white-space: nowrap;
-
-  padding: 4px 10px;
+  
+  letter-spacing: normal;
 
   border: 1px solid #dbeafe;
   border-radius: 6px;
@@ -711,10 +710,29 @@ h1 {
 }
 
 .ai-card {
-  background: #f8fafc;
-  border-left: 4px solid #2563eb;
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid transparent;
+
+  border-image: linear-gradient(
+    180deg,
+    #2563eb,
+    #10b981
+  ) 1;
+
   padding: 1rem;
-  border-radius: 10px;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 4px 12px rgba(15, 23, 42, .04);
+
+  transition: transform .2s ease;
+}
+
+.ai-card:hover {
+  transform: translateY(-2px);
 }
 
 .ai-label {
@@ -751,6 +769,10 @@ h1 {
 .ai-confidence--low {
   background: #fee2e2;
   color: #991b1b;
+}
+
+.text-black {
+  color: #000;
 }
 
 /* Mobile */

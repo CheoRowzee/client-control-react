@@ -111,7 +111,7 @@ export function LeadsPage() {
     <div className="leads-page">
       <div className="page-header">
         <div>
-          <h1>Dashboard</h1>
+          <h1 className="brand-intelligence">Dashboard</h1>
           <p className="muted">
             {data ? '' : "Loading..."}
           </p>
@@ -128,7 +128,11 @@ export function LeadsPage() {
   <div className="ai-panel">
 
     <div className="ai-panel__header">
-      <h2>AI Suggestion</h2>
+      <h2>
+        <span className="text-black">C</span>
+        <span className="brand-io">IO</span>
+        <span className="text-black">AI</span>
+      </h2>
 
       <button
         type="button"
@@ -141,8 +145,10 @@ export function LeadsPage() {
 
     {aiLoading && (
       <div className="ai-loading">
-        🤖 Analyzing lead activity...
-      </div>
+        <span className="text-black">C</span>
+        <span className="brand-io">IO</span>
+        <span className="text-black"> AI</span> is analyzing lead activity...
+    </div>
     )}
 
     {!aiLoading && aiSuggestion && (
@@ -229,7 +235,7 @@ export function LeadsPage() {
           <thead>
             <tr>
               <th  className="sortable" onClick={() => handleSort("name")}>
-                Business Name {sortColumn === "name" && (sortDirection === "asc" ? " ↑" : " ↓")}
+                Company Name {sortColumn === "name" && (sortDirection === "asc" ? " ↑" : " ↓")}
               </th>
               <th  className="sortable" onClick={() => handleSort("dOT")}>
                 DOT {sortColumn === "dot" && (sortDirection === "asc" ? " ↑" : " ↓")}</th>
@@ -324,7 +330,9 @@ export function LeadsPage() {
                       className="btn--ai"
                       onClick={() => handleAskAi(lead.id)}
                     >
-                      ✨ Ask AI
+                    <span className="text-black">C</span>
+                    <span className="brand-io">IO</span>
+                    <span className="text-black"> AI</span>
                     </button>
                 </td>
                 </tr>

@@ -139,8 +139,8 @@ export function LeadDetailPage() {
       <div className="card">
 
         <div className="detail-grid">
-          <DetailItem
-            label="Carrier"
+          <DetailItem 
+            label="Company Name"
             value={lead.name}
           />
 
@@ -235,7 +235,6 @@ export function LeadDetailPage() {
       </div>
 
       <div className="card">
-        <h2>Add Activity</h2>
 
         <div className="activity-form">
           <span className="detail-label">
@@ -281,7 +280,7 @@ export function LeadDetailPage() {
 
 
       <div className="card activity-card">
-        <h2>Activity History</h2>
+        <h2 className="brand-intelligence">Activity History</h2>
 
         <table className="table">
           <thead>
