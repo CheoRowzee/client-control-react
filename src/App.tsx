@@ -7,6 +7,7 @@ import { LeadsPage } from "./pages/LeadsPage";
 import { LeadFormPage } from "./pages/LeadFormPage";
 import { NotFoundPage } from "./pages/NotFoundPage"; 
 import { LeadDetailPage } from "./pages/LeadDetailPage"; 
+import { DashboardPage } from "./pages/DashboardPage";
 
 export default function App() {
   return (
@@ -49,6 +50,16 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+  }
+/>
+
+        
 
         <Route path="*" element={<NotFoundPage />} />
       </Route>

@@ -7,6 +7,8 @@ export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
+  companyName: string;
+
 }
 
 export interface AuthResponse {
@@ -14,4 +16,5 @@ export interface AuthResponse {
   expiresAt: string;
   email: string;
   name: string;
+  companyName: string;
 }

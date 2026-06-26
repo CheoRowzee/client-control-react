@@ -11,6 +11,8 @@ export function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [companyName, setCompanyName] = useState("");
+
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +21,8 @@ export function RegisterPage() {
     setError(null);
     setSubmitting(true);
     try {
-      await register({ name, email, password });
+      console.log("Company Name", companyName);
+      await register({ name, email, companyName, password });
       navigate("/leads", { replace: true });
     } catch (err) {
       setError(extractErrorMessage(err, "Registration failed."));
@@ -52,6 +55,17 @@ export function RegisterPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
+            required
+          />
+        </label>
+
+        <label className="form__field">
+          <span>Organization</span>
+          <input
+            type="companyName"
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
+            autoComplete="organization"
             required
           />
         </label>

@@ -68,3 +68,8 @@ export interface AiSuggestion {
   confidence: string;
   pitch: string;
 }
+
+export interface LeadStatusSummary {
+  name: string;
+  count: number;
+}

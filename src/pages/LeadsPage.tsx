@@ -110,12 +110,22 @@ export function LeadsPage() {
   return (
     <div className="leads-page">
       <div className="page-header">
+        
         <div>
-          <h1 className="brand-intelligence">Dashboard</h1>
+         <h1 className="page-title">
+            <span className="brand-io">IO</span>
+            <span className="text-black">Leads</span>
+          </h1>
           <p className="muted">
             {data ? '' : "Loading..."}
           </p>
         </div>
+
+
+
+
+
+
         <button
           type="button"
           className="btn btn--primary"
