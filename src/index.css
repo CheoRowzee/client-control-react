@@ -219,6 +219,21 @@ h1 {
   font-size: 0.85rem;
 }
 
+
+.lead-link {
+  color: var(--color-primary); /* or your brand blue */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.lead-link:hover {
+  text-decoration: underline;
+}
+
+.lead-link:visited {
+  color: var(--color-primary);
+}
 /* ---------- Forms ---------- */
 
 .form {

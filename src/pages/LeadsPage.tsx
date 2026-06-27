@@ -121,11 +121,6 @@ export function LeadsPage() {
           </p>
         </div>
 
-
-
-
-
-
         <button
           type="button"
           className="btn btn--primary"
@@ -292,9 +287,11 @@ export function LeadsPage() {
               data?.items.map((lead) => (
                 <tr key={lead.id}>
                   <td>
-                    <Link to={`/leads/${lead.id}`}>
+                    <Link
+                      to={`/leads/${lead.id}`}
+                      style={{ color: "blue" }}>
                       {lead.name}
-                    </Link>
+                  </Link>
                   </td>
 
                   <td>
